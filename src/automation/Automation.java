@@ -1,22 +1,21 @@
-package automation;
+//	Automation for Wordle-Solver powered by Selenium
+//	Made by:
+//	Jinan Patel, Sebastian Scharager
 
-import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
+package automation;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import automation.Keyboard;
 import wordle.wordleSolver;
 
 public class Automation {
 
+	public static int numLetters = wordleSolver.getNumletters();
 	
-	public static int numLetter = wordleSolver.getNumletters();
-	
+	// Takes the class name from a letters input box html/css
+	// Turns it into g for green, y for yellow and n for no color
 	public static String letterColor(String str)
 	{
 		String temp = "";
@@ -36,29 +35,29 @@ public class Automation {
 		return temp;
 	}
 	
+	// Inputs word into website and gets class attribute on each individual letter
+	// returns a string of n, y, and g
 	public static String inputter(String word, int currentAttempt, WebDriver driver) throws InterruptedException
 	{
-		for (int i = 0; i < numLetter; i++)
-		{
+		// Enters letter into wordle website
+		for (int i = 0; i < numLetters; i++)
 			Keyboard.enterLetter(driver, word.charAt(i));
-		}
 		
+		// clicks enter button
 		Thread.sleep(1000);
 		driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div[5]/div[3]/div[9]")).click();
 		Thread.sleep(250);
-		String gyn = "";
 		
-		for (int i = 1; i <= numLetter; i++)
+		// Gets whether a character is green, yellow or not in word
+		String gynString = "";
+		
+		for (int i = 1; i <= numLetters; i++)
 		{
-			String color = driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div[3]/div[" + currentAttempt + "]/div[" + i + "]")).getAttribute("class");
-			gyn = gyn + letterColor(color);
+			String classAttribute = driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div[3]/div[" + currentAttempt + "]/div[" + i + "]")).getAttribute("class");
+			gynString = gynString + letterColor(classAttribute);
 		}
-		return gyn;
-	}
-	
-	public static void main(String[] args) throws InterruptedException {
 		
-		// driver.close();
-
+		// Returns gyn character sequence
+		return gynString;
 	}
 }

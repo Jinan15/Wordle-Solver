@@ -14,12 +14,12 @@ public class wordleSolver
 	public static WebDriver driver;
     final static int numLetters = 9;
 
-    
-    // Getter for number of letters
+    // Getter for number of letters in automation
     public static int getNumletters() {
 		return numLetters;
 	}
 
+    // Reads dictionary and returns a ArrayList of words
 	public static ArrayList<String> readFile() throws IOException
     {
         File file = new File(".\\dictionaries\\" + numLetters + "LetterWords.txt");
@@ -37,7 +37,6 @@ public class wordleSolver
         return dictionary;
     }
 
-    // Currently has problems with last letter
     // Removes all words that contain the given letter
     public static ArrayList<String> removeLetter(ArrayList<String> list, char letter)
     {
@@ -58,7 +57,7 @@ public class wordleSolver
         return list;
     }
 
-    //
+    // If a word in dictionary does not contain given letter remove it from dictionary (yellow)
     public static ArrayList<String> containsLetter(ArrayList<String> list, char letter)
     {
         boolean isIn = false;
@@ -80,6 +79,7 @@ public class wordleSolver
         return list;
     }
 
+    // If a letter is in a given position of a word then remove it from dictionary (yellow)
     public static ArrayList<String> notInPosition(ArrayList<String> list, char letter, int position)
     {
         for(int i = list.size() - 1; i >= 0; i--)
@@ -88,6 +88,7 @@ public class wordleSolver
         return list;
     }
 
+    // If a letter not in a given position of a word then remove it from dictionary (green)
     public static ArrayList<String> inPosition(ArrayList<String> list, char letter, int position)
     {
         for(int i = list.size() - 1; i >= 0; i--)
@@ -106,25 +107,23 @@ public class wordleSolver
         return arr;
     }
 
-    // Prints the frequency array of number of letters
+    // Prints the frequency array of number of letters (testing)
     public static void printFrequencies(int [] arr)
     {
         for(int i = 0; i < arr.length; i++)
             System.out.println((char)('a'+i) + ": " + arr[i]);
     }
 
+    // Finds a list of words where the letter is most frequent in the current dictionary
     public static ArrayList<String> newGuessList(ArrayList<String> list, boolean [] knownLetters)
     {
-        if (list.size() == numLetters)
-            return list;
-
+    	// Create temporary dictionary so list stays unchanged
         ArrayList<String> temp = new ArrayList<>();
         for(int i = 0; i < list.size(); i++)
             temp.add(list.get(i));
 
         int index = -1;
         int [] arr = giveFrequencies(temp);
-        // printFrequencies(arr);
 
         boolean [] guessingLetters = new boolean[26];
         ArrayList<String> possibleWordList = new ArrayList<>();
@@ -142,25 +141,25 @@ public class wordleSolver
             }
             if (index == -1)
                 return list;
+            
             temp = containsLetter(temp, (char)('a' + index));
             arr = giveFrequencies(temp);
 
             guessingLetters[index] = true;
 
             if(temp.size() < 0)
-            {
                 return possibleWordList;
-            }
+            
             possibleWordList.clear();
+            
             for(int i = 0; i < temp.size(); i++)
-            {
                 possibleWordList.add(temp.get(i));
-            }
         }
 
         return temp;
     }
 
+    // Displays guesses in terminal and gets gyn string from terminal
     public static ArrayList<String> userInput(ArrayList<String> list, ArrayList<String> possibleWordList, boolean [] knownLetters)
     {
         Scanner input = new Scanner(System.in);
@@ -224,6 +223,7 @@ public class wordleSolver
         return list;
     }
 
+    // Auto solves Wordle by opening website and auto inputting words
     public static ArrayList<String> solver(ArrayList<String> list, ArrayList<String> possibleWordList, boolean [] knownLetters, int currentAttempt, WebDriver driver) throws InterruptedException
     {
         //int indexOfWord = 0;
@@ -262,6 +262,7 @@ public class wordleSolver
         return list;
     }
     
+    // Reads dictionary from file and call user input until wordle is solved
     public static void solveWordle() throws IOException
     {
         boolean [] knownLetters = new boolean[26];
@@ -273,6 +274,7 @@ public class wordleSolver
         }
     }
     
+    // Auto solves wordle at set word length forever
     public static void solveWordleAuto(WebDriver driver) throws IOException, InterruptedException
     {
         boolean [] knownLetters = new boolean[26];
@@ -286,7 +288,6 @@ public class wordleSolver
         }
     }
     
-    // main
     public static void main(String [] args) throws IOException, InterruptedException
     {
     	System.setProperty("webdriver.chrome.driver", ".\\Driver\\chromedriver.exe");

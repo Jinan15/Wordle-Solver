@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 
 public class Keyboard {
 
+	// Enters letter into wordle solver
 	public static void enterLetter(WebDriver driver, char letter)
 	{
 		letter = Character.toLowerCase(letter);
